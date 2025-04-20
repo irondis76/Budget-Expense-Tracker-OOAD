@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Expenses | Budget Tracker</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+<header>
+    <div class="container">
+        <div class="logo">
+            <h1><i class="fa-solid fa-wallet"></i> Budget Tracker</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/expenses" class="active">Expenses</a></li>
+                <li><a href="/budgets">Budgets</a></li>
+                <li><a href="/goals">Goals</a></li>
+                <li><a href="/reports">Reports</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+    <div class="dashboard-header">
+        <h2><i class="fa-solid fa-receipt"></i> Manage Daily Expenses</h2>
+        <p>Track your daily spending and keep an eye on unnecessary expenses.</p>
+    </div>
+
+    <div class="form-container">
+        <form th:action="@{/addExpense}" method="post" th:object="${expense}">
+            <div class="form-group">
+                <label for="category">Category</label>
+                <input type="text" id="category" th:field="*{category}" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label for="amount">Amount</label>
+                <input type="number" step="0.01" id="amount" th:field="*{amount}" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input type="text" id="description" th:field="*{description}" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="date">Date</label>
+                <input type="date" id="date" th:field="*{date}" class="form-control" />
+            </div>
+            <button type="submit" class="btn primary-btn"><i class="fa-solid fa-plus"></i> Add Expense</button>
+        </form>
+    </div>
+
+    <h3 style="margin-top: 40px;">All Expenses</h3>
+    <table class="data-table">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Category</th>
+            <th>Amount</th>
+            <th>Description</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="expense : ${expenses}">
+            <td th:text="${expense.date}"></td>
+            <td th:text="${expense.category}"></td>
+            <td th:text="${expense.amount}"></td>
+            <td th:text="${expense.description}"></td>
+            <td>
+                <a th:href="@{'/deleteExpense/' + ${expense.id}}" class="btn secondary-btn">
+                    <i class="fa-solid fa-trash"></i> Delete
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h2><i class="fa-solid fa-wallet"></i> Budget Tracker</h2>
+                <p>Plan • Save • Succeed</p>
+            </div>
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="/">Dashboard</a></li>
+                    <li><a href="/budgets">Budgets</a></li>
+                    <li><a href="/goals">Goals</a></li>
+                    <li><a href="/reports">Reports</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h3>Developed by</h3>
+                <p>Chaitanya N</p>
+                <p>Dishanth K</p>
+                <p>Disha Prakasha</p>
+                <p>Chetan</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p> OOAD Mini Project- Budget Tracker | Made with ❤️ @ PESU</p>
+        </div>
+    </div>
+</footer>
+
+<!-- FontAwesome JS (optional for dynamic icons) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
