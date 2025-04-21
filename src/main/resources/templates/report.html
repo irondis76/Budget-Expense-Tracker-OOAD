@@ -46,6 +46,16 @@
     </div>
 
     <h3 style="margin-top: 40px;">Generated Reports</h3>
+    <div class="report-actions" style="margin-top: 30px;">
+        <a th:href="@{/reports/pdf}" class="btn primary-btn">
+            <i class="fa-solid fa-file-pdf"></i> Download PDF Summary
+        </a>
+        <a th:href="@{/reports/export}" class="btn secondary-btn">
+            <i class="fa-solid fa-file-csv"></i> Export Expenses (CSV)
+        </a>
+    </div>
+    
+    
     <table class="data-table">
         <thead>
         <tr>

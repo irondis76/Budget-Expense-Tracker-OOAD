@@ -2,19 +2,19 @@ package com.budgettracker.util;
 
 import com.budgettracker.model.Expense;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 public class CsvExporter {
-    public static void exportExpenses(List<Expense> expenses, String filePath) {
-        try (FileWriter writer = new FileWriter(filePath)) {
-            writer.write("Date,Category,Amount,Description\n");
-            for (Expense expense : expenses) {
-                writer.write(expense.getDate() + "," + expense.getCategory() + "," + expense.getAmount() + "," + expense.getDescription() + "\n");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static void exportExpensesToStream(List<Expense> expenses, PrintWriter writer) {
+        writer.println("Date,Category,Amount,Description");
+        for (Expense expense : expenses) {
+            String line = String.format("%s,%s,%.2f,%s",
+                    expense.getDate(),
+                    expense.getCategory().getName(),
+                    expense.getAmount(),
+                    expense.getDescription().replace(",", " "));
+            writer.println(line);
         }
     }
 }
