@@ -10,11 +10,14 @@ import com.budgettracker.repository.CategoryRepository;
 import com.budgettracker.repository.ExpenseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BudgetService {
@@ -51,6 +54,24 @@ public class BudgetService {
         return budgets;
     }
 
+    @Transactional
+    public void addOrUpdateBudget(Budget budget) {
+        // Check if a budget already exists for this month/year/user
+        Optional<Budget> existingBudget = budgetRepository.findByUserIdAndYearAndMonth(
+                budget.getUserId(), budget.getYear(), budget.getMonth());
+
+        if (existingBudget.isPresent()) {
+            Budget current = existingBudget.get();
+            current.setName(budget.getName());
+            current.setTotalLimit(budget.getTotalLimit());
+            current.setDescription(budget.getDescription());
+            budgetRepository.save(current);
+        } else {
+            budgetRepository.save(budget);
+        }
+    }
+
+    @Transactional
     public void addOrUpdateBudgetItem(Long budgetId, Long categoryId, BigDecimal amount) {
         Budget budget = budgetRepository.findById(budgetId)
                 .orElseThrow(() -> new IllegalArgumentException("Budget not found"));
@@ -78,7 +99,25 @@ public class BudgetService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
+    public void deleteBudget(Long id) {
+        budgetRepository.deleteById(id);
+    }
+
     public void deleteBudgetItem(Long id) {
         budgetItemRepository.deleteById(id);
+    }
+
+    public Budget getBudgetById(Long id) {
+        return budgetRepository.findById(id).orElse(null);
+    }
+
+    public List<Budget> getBudgetsByUserId(Long userId) {
+        return budgetRepository.findByUserId(userId);
+    }
+
+    public Budget getCurrentMonthBudget(Long userId) {
+        YearMonth current = YearMonth.now();
+        return budgetRepository.findByUserIdAndYearAndMonth(userId, current.getYear(), current.getMonthValue())
+                .orElse(null);
     }
 }
